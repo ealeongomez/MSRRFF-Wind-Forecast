@@ -41,8 +41,6 @@ MSRRFF-Wind-Forecast/
 │   ├── plots/             # Generated visualizations
 │   └── metrics/           # Performance metrics
 │
-├── .cursorrules           # Project coding standards
-├── .gitignore             # Git ignore rules
 ├── README.md              # This file
 └── requirements.txt       # Python dependencies
 ```
