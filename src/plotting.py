@@ -9,6 +9,16 @@ import numpy as np
 import re
 from typing import Dict
 
+# LaTeX labels for hyperparameters (nomenclature from search space description)
+PARAM_TO_LATEX = {
+    "bands_preset": r"$B$",
+    "hidden": r"$d_h$",
+    "lr_rho_multiplier": r"$\eta_\rho$",
+    "nf_per_band": r"$N_f$",
+    "num_layers": r"$L$",
+    "spectral_dropout_p": r"$p_{\mathrm{spec}}$",
+}
+
 # ========================================================================================
 # Plot grouped importances
 # ========================================================================================
@@ -61,23 +71,25 @@ def plot_grouped_importances(importances_dict: Dict[str, Dict[str, float]],
         name = name.replace('-0', '')
         name = name.replace('-1', '')
         name = name.replace('-2', '')
+        name = name.replace('RFF-RNN', 'RFF-SRNN').replace('RFF+RNN', 'RFF-SRNN')
 
         ax.bar(x + offset, importances, width, label=name, 
                color=colors[i % len(colors)], alpha=0.85, 
                edgecolor='black', linewidth=0.8)
     
-    # Style
+    # Style: axis labels (LaTeX nomenclature)
     ax.set_xlabel('Hyperparameters', fontsize=30, fontweight='bold')
     ax.set_ylabel('Importance', fontsize=30, fontweight='bold')
-    #ax.set_title('Hyperparameter Importances Comparison', fontsize=16, fontweight='bold', pad=20)
     ax.set_xticks(x)
-    ax.set_xticklabels(all_params, rotation=25, ha='right', fontsize=30)
-    ax.legend(fontsize=20, loc='upper right', framealpha=0.95)
+    x_labels = [PARAM_TO_LATEX.get(p, p) for p in all_params]
+    ax.set_xticklabels(x_labels, rotation=0, ha='right', fontsize=30)
+    ax.tick_params(axis='y', labelsize=28)
+    # leg = ax.legend(fontsize=20, loc='upper center', bbox_to_anchor=(0.5, 1.02), ncol=3, framealpha=0.95)
     ax.grid(True, alpha=0.3, axis='y', linestyle='--')
     ax.set_facecolor('#f8f9fa')
     
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    fig.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
 
@@ -146,7 +158,7 @@ def plot_contour_search(studies_data: Dict[str, Dict[str, np.ndarray]],
         ax.set_ylabel(param_y.replace('params_', '').replace('_', ' ').title(), fontsize=12, fontweight='bold')
         ax.grid(True, linestyle='--', alpha=0.25)
         ax.tick_params(labelsize=10)
-        ax.legend(loc='upper right', fontsize=9)
+        #ax.legend(loc='upper right', fontsize=9)
         ax.set_xlim(x.min() - x_margin, x.max() + x_margin)
         ax.set_ylim(y.min() - y_margin, y.max() + y_margin)
 
@@ -230,11 +242,11 @@ def plot_contours_comparison(studies_data: Dict[str, Dict[str, np.ndarray]],
         ax.set_ylabel(param_y.replace('params_', '').replace('_', ' ').title(), fontsize=12, fontweight='bold')
         ax.grid(True, linestyle='--', alpha=0.25)
         ax.tick_params(labelsize=10)
-        ax.legend(loc='upper right', fontsize=9)
+        #ax.legend(loc='upper right', fontsize=9)
 
         ax.set_xlim(x.min() - x_margin, x.max() + x_margin)
         ax.set_ylim(y.min() - y_margin, y.max() + y_margin)
 
-    plt.tight_layout()
+    #plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
